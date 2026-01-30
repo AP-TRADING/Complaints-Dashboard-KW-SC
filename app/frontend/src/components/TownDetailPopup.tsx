@@ -1,11 +1,11 @@
-https://github.com/AP-TRADING/Complaints-Dashboard-KW-SCimport * as React from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { TownStats } from '@/lib/mockData';
-import { cn } from '@/lib/utils';
+import * as React from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
+import { Badge } from './ui/badge';
+import { Button } from './ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { ScrollArea } from './ui/scroll-area';
+import { TownStats } from '../lib/mockData';
+import { cn } from '../lib/utils';
 
 interface TownDetailPopupProps {
   town: TownStats;
@@ -66,7 +66,7 @@ export function TownDetailPopup({ town, isOpen, onClose }: TownDetailPopupProps)
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden bg-gradient-to-br from-slate-900 to-slate-800 border-2 border-white/20">
+      <DialogContent className="max-w-6xl max-h-[80vh] overflow-hidden bg-gradient-to-br from-slate-900 to-slate-800 border-2 border-white/20">
         <DialogHeader className="pb-4 border-b border-white/20">
           <DialogTitle className="text-3xl font-bold text-white flex items-center justify-between">
             <span>{town.town} - Detailed Analysis</span>
@@ -77,7 +77,7 @@ export function TownDetailPopup({ town, isOpen, onClose }: TownDetailPopupProps)
           </DialogDescription>
         </DialogHeader>
 
-        <ScrollArea className="flex-1 pr-4">
+        <ScrollArea className="flex-1 pr-6 max-h-[70vh]">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pb-4">
             {/* Complaint Statistics */}
             <Card className="bg-black/50 border-white/20">
@@ -104,7 +104,7 @@ export function TownDetailPopup({ town, isOpen, onClose }: TownDetailPopupProps)
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-3 gap-4">
                   <div className="bg-slate-800/50 p-4 rounded-lg">
                     <div className="text-xl font-bold text-cyan-400">{town.water}</div>
                     <div className="text-sm text-slate-400">Water Complaints</div>
@@ -112,6 +112,10 @@ export function TownDetailPopup({ town, isOpen, onClose }: TownDetailPopupProps)
                   <div className="bg-slate-800/50 p-4 rounded-lg">
                     <div className="text-xl font-bold text-purple-400">{town.sewerage}</div>
                     <div className="text-sm text-slate-400">Sewerage Complaints</div>
+                  </div>
+                  <div className="bg-slate-800/50 p-4 rounded-lg">
+                    <div className="text-xl font-bold text-amber-400">{town.other}</div>
+                    <div className="text-sm text-slate-400">Other Complaints</div>
                   </div>
                 </div>
 

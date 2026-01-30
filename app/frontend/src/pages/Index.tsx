@@ -3,17 +3,21 @@ import { TVMetricCard } from '../components/TVMetricCard';
 import { CriticalTable } from '../components/CriticalTable';
 import { KeyInsights } from '../components/KeyInsights';
 import { MonthlyTrendChart } from '../components/MonthlyTrendChart';
+import { ComplaintTypePopup } from '../components/ComplaintTypePopup';
 import {
   metrics as initialMetrics,
   townStats,
   calculateMetrics,
   complaints
-} from '@/lib/mockData';
+} from '../lib/mockData';
 import { Droplets, Waves, CheckCircle2, XCircle, AlertTriangle, TrendingUp, Clock, Award } from 'lucide-react';
 
 export default function Index() {
   const [metrics, setMetrics] = useState(initialMetrics);
   const [lastUpdate, setLastUpdate] = useState(new Date());
+  const [waterPopupOpen, setWaterPopupOpen] = useState(false);
+  const [seweragePopupOpen, setSeweragePopupOpen] = useState(false);
+  const [otherPopupOpen, setOtherPopupOpen] = useState(false);
 
   // Simulate real-time updates
   useEffect(() => {
@@ -24,9 +28,10 @@ export default function Index() {
     return () => clearInterval(interval);
   }, []);
 
-  // Calculate water and sewerage breakdown (all time)
+  // Calculate water, sewerage, and other breakdown (all time)
   const waterComplaints = complaints.filter(c => c.type === 'water');
   const sewerageComplaints = complaints.filter(c => c.type === 'sewerage');
+  const otherComplaints = complaints.filter(c => c.type === 'other');
   
   const waterStats = {
     total: waterComplaints.length,
@@ -40,6 +45,13 @@ export default function Index() {
     resolved: sewerageComplaints.filter(c => c.status === 'resolved').length,
     unresolved: sewerageComplaints.filter(c => c.status === 'unresolved').length,
     pending: sewerageComplaints.filter(c => c.status === 'pending').length
+  };
+  
+  const otherStats = {
+    total: otherComplaints.length,
+    resolved: otherComplaints.filter(c => c.status === 'resolved').length,
+    unresolved: otherComplaints.filter(c => c.status === 'unresolved').length,
+    pending: otherComplaints.filter(c => c.status === 'pending').length
   };
 
   // Calculate insights
@@ -127,7 +139,10 @@ export default function Index() {
           {/* Center - Water & Sewerage Breakdown */}
           <div className="col-span-12 lg:col-span-6 space-y-6">
             {/* Water Section */}
-            <div className="bg-black/60 backdrop-blur-sm p-6 rounded-xl border-2 border-cyan-500/40">
+            <div 
+              className="bg-black/60 backdrop-blur-sm p-6 rounded-xl border-2 border-cyan-500/40 cursor-pointer hover:border-cyan-400 hover:shadow-lg hover:shadow-cyan-500/20 transition-all duration-300"
+              onClick={() => setWaterPopupOpen(true)}
+            >
               <div className="flex items-center gap-3 mb-4">
               <Droplets className="h-10 w-10 text-cyan-300" />
                 <h2 className="text-2xl font-bold text-white">Water Complaints</h2>
@@ -153,7 +168,10 @@ export default function Index() {
             </div>
 
             {/* Sewerage Section */}
-            <div className="bg-black/60 backdrop-blur-sm p-6 rounded-xl border-2 border-purple-500/40">
+            <div 
+              className="bg-black/60 backdrop-blur-sm p-6 rounded-xl border-2 border-purple-500/40 cursor-pointer hover:border-purple-400 hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300"
+              onClick={() => setSeweragePopupOpen(true)}
+            >
               <div className="flex items-center gap-3 mb-4">
               <Waves className="h-10 w-10 text-purple-300" />
                 <h2 className="text-2xl font-bold text-white">Sewerage Complaints</h2>
@@ -174,6 +192,37 @@ export default function Index() {
                 <div className="text-center">
                   <p className="text-sm text-gray-300 mb-1">Unresolved</p>
                   <p className="text-3xl font-bold text-red-300">{sewerageStats.unresolved}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Other Complaints Section */}
+            <div 
+              className="bg-black/60 backdrop-blur-sm p-6 rounded-xl border-2 border-amber-500/40 cursor-pointer hover:border-amber-400 hover:shadow-lg hover:shadow-amber-500/20 transition-all duration-300"
+              onClick={() => setOtherPopupOpen(true)}
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <svg className="h-10 w-10 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <h2 className="text-2xl font-bold text-white">Other Complaints</h2>
+              </div>
+              <div className="grid grid-cols-4 gap-4">
+                <div className="text-center">
+                  <p className="text-sm text-gray-300 mb-1">Total</p>
+                  <p className="text-3xl font-bold text-amber-300">{otherStats.total}</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-sm text-gray-300 mb-1">Resolved</p>
+                  <p className="text-3xl font-bold text-green-300">{otherStats.resolved}</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-sm text-gray-300 mb-1">Pending</p>
+                  <p className="text-3xl font-bold text-amber-300">{otherStats.pending}</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-sm text-gray-300 mb-1">Unresolved</p>
+                  <p className="text-3xl font-bold text-red-300">{otherStats.unresolved}</p>
                 </div>
               </div>
             </div>
@@ -208,6 +257,28 @@ export default function Index() {
         {/* Bottom Row - Monthly Trends */}
         <MonthlyTrendChart />
       </div>
+
+      {/* Complaint Type Popups */}
+      <ComplaintTypePopup
+        isOpen={waterPopupOpen}
+        onClose={() => setWaterPopupOpen(false)}
+        complaintType="water"
+        stats={waterStats}
+      />
+      
+      <ComplaintTypePopup
+        isOpen={seweragePopupOpen}
+        onClose={() => setSeweragePopupOpen(false)}
+        complaintType="sewerage"
+        stats={sewerageStats}
+      />
+      
+      <ComplaintTypePopup
+        isOpen={otherPopupOpen}
+        onClose={() => setOtherPopupOpen(false)}
+        complaintType="other"
+        stats={otherStats}
+      />
     </div>
   );
 }

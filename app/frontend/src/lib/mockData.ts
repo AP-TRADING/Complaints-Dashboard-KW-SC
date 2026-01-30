@@ -2,7 +2,7 @@
 export interface Complaint {
     id: string;
     town: string;
-    type: 'water' | 'sewerage';
+    type: 'water' | 'sewerage' | 'other';
     status: 'resolved' | 'unresolved' | 'pending';
     priority: 'high' | 'medium' | 'low';
     createdAt: Date;
@@ -12,17 +12,18 @@ export interface Complaint {
     lastTouched: Date;
   }
   
-  export interface TownStats {
-    town: string;
-    total: number;
-    resolved: number;
-    unresolved: number;
-    pending: number;
-    water: number;
-    sewerage: number;
-    avgTAT: number;
-    satisfactionRate: number;
-  }
+export interface TownStats {
+  town: string;
+  total: number;
+  resolved: number;
+  unresolved: number;
+  pending: number;
+  water: number;
+  sewerage: number;
+  other: number;
+  avgTAT: number;
+  satisfactionRate: number;
+}
   
   export interface DashboardMetrics {
     totalComplaints: number;
@@ -66,7 +67,11 @@ export interface Complaint {
     for (let i = 0; i < count; i++) {
       const createdDaysAgo = Math.floor(Math.random() * 30);
       const createdAt = new Date(now.getTime() - createdDaysAgo * 24 * 60 * 60 * 1000);
-      const type = Math.random() > 0.5 ? 'water' : 'sewerage';
+      const typeRand = Math.random();
+      let type: 'water' | 'sewerage' | 'other';
+      if (typeRand < 0.45) type = 'water';
+      else if (typeRand < 0.9) type = 'sewerage';
+      else type = 'other';
       const statusRand = Math.random();
       let status: 'resolved' | 'unresolved' | 'pending';
       let resolvedAt: Date | undefined;
@@ -118,6 +123,7 @@ export interface Complaint {
         pending: 0,
         water: 0,
         sewerage: 0,
+        other: 0,
         avgTAT: 0,
         satisfactionRate: 0
       });
@@ -132,7 +138,8 @@ export interface Complaint {
       else stats.pending++;
       
       if (complaint.type === 'water') stats.water++;
-      else stats.sewerage++;
+      else if (complaint.type === 'sewerage') stats.sewerage++;
+      else stats.other++;
     });
     
     // Calculate averages
@@ -214,3 +221,11 @@ export interface Complaint {
   export const townStats = calculateTownStats(complaints);
   export const metrics = calculateMetrics(complaints);
   export const bestPerformers = getBestPerformers(townStats);
+
+  // Debug: Log complaint distribution to verify "other" complaints are being generated
+  const complaintCounts = complaints.reduce((acc, complaint) => {
+    acc[complaint.type] = (acc[complaint.type] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+  
+  console.log('Complaint distribution:', complaintCounts);
