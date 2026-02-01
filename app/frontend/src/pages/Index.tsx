@@ -89,7 +89,7 @@ export default function Index() {
   ];
 
   return (
-    <div 
+<div 
       className="min-h-screen bg-background p-6"
       style={{
         backgroundImage: `url('/frontend/public/BG Image.png')`,
@@ -97,7 +97,7 @@ export default function Index() {
         backgroundAttachment: 'fixed'
       }}
     >
-      <div className="max-w-[2000px] mx-auto space-y-6">
+<div className="max-w-[2000px] mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -122,22 +122,23 @@ export default function Index() {
         </div>
 
         {/* Top Row - Main Metrics */}
-        <div className="grid grid-cols-12 gap-6">
+<div className="grid grid-cols-12 gap-6">
           {/* Left - Overall Resolved */}
-          <div className="col-span-12 lg:col-span-3">
-            <TVMetricCard
+<div className="col-span-12 lg:col-span-3">
+<TVMetricCard
               title="Total Resolved"
               value={metrics.resolvedComplaints}
               percentage={metrics.resolvedPercentage}
               trend={metrics.dailyChangePercentage}
-              color="green"
+              cardType="resolved"
               size="xlarge"
               icon={<CheckCircle2 className="h-12 w-12 text-green-300" />}
             />
+
           </div>
 
           {/* Center - Water & Sewerage Breakdown */}
-          <div className="col-span-12 lg:col-span-6 space-y-6">
+<div className="col-span-12 lg:col-span-6 space-y-6">
             {/* Water Section */}
             <div 
               className="bg-black/60 backdrop-blur-sm p-6 rounded-xl border-2 border-cyan-500/40 cursor-pointer hover:border-cyan-400 hover:shadow-lg hover:shadow-cyan-500/20 transition-all duration-300"
@@ -229,27 +230,29 @@ export default function Index() {
           </div>
 
           {/* Right - Overall Unresolved */}
-          <div className="col-span-12 lg:col-span-3">
-            <TVMetricCard
+<div className="col-span-12 lg:col-span-3">
+<TVMetricCard
               title="Total Unresolved"
               value={metrics.unresolvedComplaints}
               percentage={metrics.unresolvedPercentage}
-              color="red"
+              trend={metrics.dailyChangePercentage}
+              cardType="unresolved"
               size="xlarge"
               icon={<XCircle className="h-12 w-12 text-red-300" />}
             />
+
           </div>
         </div>
 
         {/* Middle Row - Table and Insights */}
         <div className="grid grid-cols-12 gap-6">
           {/* Left - Key Insights */}
-          <div className="col-span-12 lg:col-span-3">
+<div className="col-span-12 lg:col-span-3">
             <KeyInsights insights={insights} />
           </div>
 
           {/* Right - Critical Table */}
-          <div className="col-span-12 lg:col-span-9">
+<div className="col-span-12 lg:col-span-9">
             <CriticalTable data={townStats} />
           </div>
         </div>
