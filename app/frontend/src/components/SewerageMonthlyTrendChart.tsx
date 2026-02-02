@@ -3,12 +3,12 @@ import { Card } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { cn } from '@/lib/utils';
 
-interface MonthlyTrendChartProps {
+interface SewerageMonthlyTrendChartProps {
   className?: string;
 }
 
-export function MonthlyTrendChart({ className }: MonthlyTrendChartProps) {
-  // Generate last 12 months data with water/sewerage breakdown
+export function SewerageMonthlyTrendChart({ className }: SewerageMonthlyTrendChartProps) {
+  // Generate last 12 months data for sewerage complaints only
   const generateMonthlyData = () => {
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const currentMonth = new Date().getMonth();
@@ -16,15 +16,15 @@ export function MonthlyTrendChart({ className }: MonthlyTrendChartProps) {
 
     for (let i = 11; i >= 0; i--) {
       const monthIdx = (currentMonth - i + 12) % 12;
-      const totalComplaints = Math.floor(Math.random() * 500) + 1800;
-      const waterRatio = 0.55 + Math.random() * 0.1; // 55-65% water
+      const totalComplaints = Math.floor(Math.random() * 200) + 600;
+      const resolvedRatio = 0.6 + Math.random() * 0.25; // 60-85% resolved
 
       data.push({
         month: months[monthIdx],
-        water: Math.floor(totalComplaints * waterRatio),
-        sewerage: Math.floor(totalComplaints * (1 - waterRatio)),
-        resolved: Math.floor(totalComplaints * 0.75),
-        pending: Math.floor(totalComplaints * 0.15)
+        total: totalComplaints,
+        resolved: Math.floor(totalComplaints * resolvedRatio),
+        pending: Math.floor(totalComplaints * 0.2),
+        unresolved: Math.floor(totalComplaints * (1 - resolvedRatio - 0.2))
       });
     }
 
@@ -40,7 +40,7 @@ export function MonthlyTrendChart({ className }: MonthlyTrendChartProps) {
   return (
     <Card 
       className={cn(
-        'p-4 sm:p-6 bg-black/60 backdrop-blur-sm border-2 border-white/30',
+        'p-4 sm:p-6 bg-black/60 backdrop-blur-sm border-2 border-purple-500/40',
         'min-h-[300px] sm:min-h-[400px] h-auto w-full',
         'flex flex-col',
         className
@@ -54,7 +54,7 @@ export function MonthlyTrendChart({ className }: MonthlyTrendChartProps) {
         opacity: 1
       }}
     >
-      <h3 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4">Monthly Complaint Trends - Water vs Sewerage</h3>
+      <h3 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4">Monthly Sewerage Complaint Trends</h3>
       <div className="w-full flex-1" style={{ minHeight: '250px', height: '300px', maxHeight: '400px' }}>
         <ResponsiveContainer width={chartWidth} height={chartHeight}>
           <BarChart data={data}>
@@ -67,6 +67,13 @@ export function MonthlyTrendChart({ className }: MonthlyTrendChartProps) {
             <YAxis 
               stroke="#9CA3AF"
               tick={{ fill: '#E5E7EB', fontSize: '14px' }}
+              domain={[0, 'dataMax + 50']}
+              scale="linear"
+              allowDataOverflow={false}
+              padding={{ bottom: 0, top: 0 }}
+              allowDecimals={false}
+              interval={0}
+              tickCount={6}
             />
             <Tooltip
               contentStyle={{
@@ -82,10 +89,10 @@ export function MonthlyTrendChart({ className }: MonthlyTrendChartProps) {
               wrapperStyle={{ fontSize: '14px', paddingTop: '16px', color: '#E5E7EB' }}
               iconSize={16}
             />
-            <Bar dataKey="water" fill="#06B6D4" name="Water Complaints" radius={[6, 6, 0, 0]} />
-            <Bar dataKey="sewerage" fill="#A855F7" name="Sewerage Complaints" radius={[6, 6, 0, 0]} />
+            <Bar dataKey="total" fill="#A855F7" name="Total Sewerage Complaints" radius={[6, 6, 0, 0]} />
             <Bar dataKey="resolved" fill="#10B981" name="Resolved" radius={[6, 6, 0, 0]} />
-            <Bar dataKey="pending" fill="#F59E0B" name="Pending" radius={[6, 6, 6, 6]} />
+            <Bar dataKey="pending" fill="#F59E0B" name="Pending" radius={[6, 6, 0, 0]} />
+            <Bar dataKey="unresolved" fill="#EF4444" name="Unresolved" radius={[6, 6, 6, 6]} />
           </BarChart>
         </ResponsiveContainer>
       </div>

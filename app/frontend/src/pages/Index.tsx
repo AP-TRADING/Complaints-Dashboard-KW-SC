@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { TVMetricCard } from '../components/TVMetricCard';
 import { CriticalTable } from '../components/CriticalTable';
 import { KeyInsights } from '../components/KeyInsights';
-import { MonthlyTrendChart } from '../components/MonthlyTrendChart';
+import { WaterMonthlyTrendChart } from '../components/WaterMonthlyTrendChart';
+import { SewerageMonthlyTrendChart } from '../components/SewerageMonthlyTrendChart';
 import { ComplaintTypePopup } from '../components/ComplaintTypePopup';
 import {
   metrics as initialMetrics,
@@ -258,7 +259,14 @@ export default function Index() {
         </div>
 
         {/* Bottom Row - Monthly Trends */}
-        <MonthlyTrendChart />
+        <div className="grid grid-cols-12 gap-6">
+          <div className="col-span-12 lg:col-span-6">
+            <WaterMonthlyTrendChart />
+          </div>
+          <div className="col-span-12 lg:col-span-6">
+            <SewerageMonthlyTrendChart />
+          </div>
+        </div>
       </div>
 
       {/* Complaint Type Popups */}
